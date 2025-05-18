@@ -16,10 +16,13 @@ dev = [
   "yapf==0.40.2",
   "pytest==8.1.1",
   "mypy==1.10.0",
+  "twine>=6.1.0",
+  "build>=1.2.2.post1",
 ]
 
 [tool.setuptools]
-packages = ["wf"]
+packages = ["anndata_metadata"]
+package-dir = {"" = "src"}
 
 [tool.yapf]
 based_on_style = "yapf"
@@ -61,3 +64,5 @@ disallow_untyped_defs = false
 check_untyped_defs = true
 show_error_codes = true
 
+[project.scripts]
+anndata-metadata = "anndata_metadata.main:main"

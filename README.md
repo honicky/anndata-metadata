@@ -58,6 +58,28 @@ This project uses [uv](https://github.com/astral-sh/uv) for fast Python environm
    uv run mypy
    ```
 
+5. **Run CLI**
+   ```sh
+   PYTHONPATH=src uv run python -m anndata_metadata
+   ```
+
+6. Build and test the wheel
+   ```sh
+   uv run python -m build
+   ```
+   and test it using
+   ```sh
+    python -m venv testenv
+    source testenv/bin/activate
+    pip install dist/anndata_metadata-*.whl --force-reinstall
+    
+   ```
+   you will now be able to run the cli command like this
+   ```
+    anndata-metadata
+   ```
+
+
 ### Project Structure
 
 - `src/anndata_metadata/extract.py`: Core metadata extraction logic.
