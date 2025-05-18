@@ -1,0 +1,53 @@
+[project]
+name = "anndata-metadata"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "h5py>=3.13.0",
+    "pandas>=2.2.3",
+    "pyarrow>=20.0.0",
+    "s3fs>=2025.3.2",
+]
+
+[dependency-groups]
+dev = [
+  "yapf==0.40.2",
+  "pytest==8.1.1",
+]
+
+[tool.setuptools]
+packages = ["wf"]
+
+[tool.yapf]
+based_on_style = "yapf"
+column_limit = 88
+continuation_indent_width = 2
+indent_width = 2
+
+[tool.yapfignore]
+ignore_patterns = [
+  ".venv/**/*.py",
+  "__pycache__/**/*.py"
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+addopts = "-v --ignore=.venv --ignore=__pycache__ -W ignore::DeprecationWarning"
+testpaths = ["test"]
+python_files = ["test_*.py"]
+norecursedirs = [
+    ".*",
+    "__pycache__",
+    "*.egg",
+    ".eggs",
+    "*.egg-info",
+    "dist",
+    "build",
+    ".env",
+    ".venv",
+    "venv",
+    "env",
+    "docs"
+]
