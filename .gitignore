@@ -8,3 +8,10 @@ wheels/
 
 # Virtual environments
 .venv
+*.json
+*.parquet
+*.h5ad
+*.h5ad.gz
+*.h5ad.bgz
+*.h5ad.bgz.gz
+*.h5ad.bgz.gz.bgz

@@ -5,7 +5,7 @@ import os
 import numpy as np
 
 
-def get_anndata_file_info(file_path: str) -> dict[str, Any]:
+def get_anndata_file_info(file_path: str, obs_to_count: list[str] = None) -> dict[str, dict[str, int]]:
   """
     Extract metadata information from an H5AD file and return it as a dictionary.
     """
@@ -13,13 +13,13 @@ def get_anndata_file_info(file_path: str) -> dict[str, Any]:
   info = {'file_size': int(os.path.getsize(file_path)) }
 
   with h5py.File(file_path, 'r') as f:
-    info.update(get_anndata_info(f))
+    info.update(get_anndata_info(f, obs_to_count))
 
   # Get file size
   return info
 
 
-def get_anndata_object_info(s3_uri: str) -> dict[str, Any]:
+def get_anndata_object_info(s3_uri: str, obs_to_count: list[str] = None) -> dict[str, dict[str, int]]:
   """
     Extract metadata information from a H5AD object in S3 and return it as a dictionary.
     """
@@ -28,12 +28,12 @@ def get_anndata_object_info(s3_uri: str) -> dict[str, Any]:
 
   with fs.open(s3_uri, 'rb') as f:
     with h5py.File(f, 'r') as h5file:
-      info.update(get_anndata_info(h5file))
+      info.update(get_anndata_info(h5file, obs_to_count))
 
   return info
 
 
-def get_anndata_info(f: h5py.File) -> dict[str, Any]:
+def get_anndata_info(f: h5py.File, obs_to_count: list[str] = None) -> dict[str, dict[str, int]]:
   """
     Extracts key metadata from an AnnData H5AD file object.
 
@@ -58,7 +58,7 @@ def get_anndata_info(f: h5py.File) -> dict[str, Any]:
             - embeddings: List of keys in the 'obsm' group (cell embeddings).
             - pairwise_relationships: List of keys in the 'obsp' group (pairwise relationships).
             - expression_layers: List of keys in the 'layers' group (expression layers).
-
+            - obs_counts: Dictionary of dictionaries containing counts for each observation in obs_to_count.
     Notes
     -----
     This function is intended to be called with an open h5py.File object representing an AnnData H5AD file.
@@ -84,8 +84,11 @@ def get_anndata_info(f: h5py.File) -> dict[str, Any]:
     },
     'embeddings': list(f['obsm'].keys()) if 'obsm' in f else [],
     'pairwise_relationships': list(f['obsp'].keys()) if 'obsp' in f else [],
-    'expression_layers': list(f['layers'].keys()) if 'layers' in f else []
+    'expression_layers': list(f['layers'].keys()) if 'layers' in f else [],
   }
+
+  if obs_to_count:
+    info['obs_counts'] = {obs: get_obs_counts(f, obs) for obs in obs_to_count}
 
   return _convert_to_python_types(info)
 
@@ -159,6 +162,27 @@ def get_sparse_matrix_format(f: h5py.File) -> str:
     format_type = 'Dense' if 'data' in x_components else 'Unknown'
 
   return format_type
+
+
+def get_obs_counts(f: h5py.File, obs_to_count: str) -> dict[str, int]:
+    """
+    Get the counts of the observations in the dataset for a categorical variable.
+    """
+    if obs_to_count not in f['obs']:
+        return {}
+
+    obs_entry = f['obs'][obs_to_count]
+    # If it's a categorical variable stored as a group
+    if isinstance(obs_entry, h5py.Group):
+        categories = obs_entry['categories'][()].astype(str)
+        codes = obs_entry['codes'][()]
+        counts = np.bincount(codes, minlength=len(categories))
+        return dict(zip(categories, counts))
+    else:
+        # If it's a dataset, just use numpy unique with return_counts
+        values = obs_entry[()]
+        unique, counts = np.unique(values, return_counts=True)
+        return dict(zip(unique.astype(str), counts))
 
 
 def _convert_to_python_types(obj: Any) -> Any:

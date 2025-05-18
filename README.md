@@ -39,7 +39,8 @@ This project uses [uv](https://github.com/astral-sh/uv) for fast Python environm
 
 1. **Install dependencies:**
    ```sh
-   uv sync
+   uv sync # this gets the dependenceis you need to run the command
+   uv sync --group dev # this gets the dev dependencies for testing and formatting
    ```
 
 2. **Run tests:**
@@ -58,3 +59,9 @@ This project uses [uv](https://github.com/astral-sh/uv) for fast Python environm
 - `main.py`: CLI entry point.
 - `test/`: Unit tests for extraction functions.
 
+# TODO
+
+- [ ] add mypy support
+- [ ] add a wheel and submit to pypy
+- [ ] CI/CD pipeline for updating pyp
+- [ ] write partial results and skip previously written values
