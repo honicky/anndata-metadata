@@ -1,16 +1,16 @@
 import h5py
 import s3fs
-from typing import Any
+from typing import Any, Optional
 import os
 import numpy as np
 
 
-def get_anndata_file_info(file_path: str, obs_to_count: list[str] = None) -> dict[str, dict[str, int]]:
+def get_anndata_file_info(file_path: str, obs_to_count: Optional[list[str]] = None) -> dict[str, dict[str, int]]:
   """
     Extract metadata information from an H5AD file and return it as a dictionary.
     """
 
-  info = {'file_size': int(os.path.getsize(file_path)) }
+  info: dict[str, Any] = {'file_size': int(os.path.getsize(file_path)) }
 
   with h5py.File(file_path, 'r') as f:
     info.update(get_anndata_info(f, obs_to_count))
@@ -19,12 +19,12 @@ def get_anndata_file_info(file_path: str, obs_to_count: list[str] = None) -> dic
   return info
 
 
-def get_anndata_object_info(s3_uri: str, obs_to_count: list[str] = None) -> dict[str, dict[str, int]]:
+def get_anndata_object_info(s3_uri: str, obs_to_count: Optional[list[str]] = None) -> dict[str, dict[str, int]]:
   """
     Extract metadata information from a H5AD object in S3 and return it as a dictionary.
     """
   fs = s3fs.S3FileSystem(anon=False)
-  info = {'file_size': int(fs.info(s3_uri)['size']) }
+  info: dict[str, Any] = {'file_size': int(fs.info(s3_uri)['size']) }
 
   with fs.open(s3_uri, 'rb') as f:
     with h5py.File(f, 'r') as h5file:
@@ -33,7 +33,7 @@ def get_anndata_object_info(s3_uri: str, obs_to_count: list[str] = None) -> dict
   return info
 
 
-def get_anndata_info(f: h5py.File, obs_to_count: list[str] = None) -> dict[str, dict[str, int]]:
+def get_anndata_info(f: h5py.File, obs_to_count: Optional[list[str]] = None) -> dict[str, dict[str, int]]:
   """
     Extracts key metadata from an AnnData H5AD file object.
 
@@ -110,7 +110,7 @@ def get_cell_count(f: h5py.File) -> int:
     return len(first_obs_entry)
 
 
-def get_gene_count(f: h5py.File) -> int:
+def get_gene_count(f: h5py.File) -> Optional[int]:
   """
     Get the number of genes in the dataset by checking the first
     entry in the 'var' group. If it is a h5py.Group, it is assumed
@@ -118,7 +118,7 @@ def get_gene_count(f: h5py.File) -> int:
     sub-variable with the number of genes as the first dimension.
   """
 
-  n_var = None
+  n_var: Optional[int] = None
 
   if 'feature_name' in f['var']:
     feature_name = f['var']['feature_name']

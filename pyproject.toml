@@ -15,6 +15,7 @@ dependencies = [
 dev = [
   "yapf==0.40.2",
   "pytest==8.1.1",
+  "mypy==1.10.0",
 ]
 
 [tool.setuptools]
@@ -51,3 +52,12 @@ norecursedirs = [
     "env",
     "docs"
 ]
+
+[tool.mypy]
+python_version = "3.12"
+files = ["src", "test"]
+ignore_missing_imports = true
+disallow_untyped_defs = false
+check_untyped_defs = true
+show_error_codes = true
+

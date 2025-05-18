@@ -53,6 +53,11 @@ This project uses [uv](https://github.com/astral-sh/uv) for fast Python environm
    uv run yapf --recursive . --in-place
    ```
 
+4. **Type check (mypy):**
+   ```sh
+   uv run mypy
+   ```
+
 ### Project Structure
 
 - `src/anndata_metadata/extract.py`: Core metadata extraction logic.
@@ -61,7 +66,7 @@ This project uses [uv](https://github.com/astral-sh/uv) for fast Python environm
 
 # TODO
 
-- [ ] add mypy support
+- [x] add mypy support
 - [ ] add a wheel and submit to pypy
 - [ ] CI/CD pipeline for updating pyp
 - [ ] write partial results and skip previously written values
