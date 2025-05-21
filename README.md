@@ -48,6 +48,7 @@ anndata-metadata data/ metadata.parquet
 anndata-metadata s3://my-bucket/ metadata.parquet
 ```
 
+
 ## Development
 
 ### Setup
@@ -100,9 +101,9 @@ This project uses [uv](https://github.com/astral-sh/uv) for fast Python environm
 ```
 .
 ├── src/
-│ ├── anndata_metadata/
-│ ├── extract.py # Core metadata extraction logic
-│ └── main.py # CLI entry point
+│ └── anndata_metadata/
+│   ├── extract.py # Core metadata extraction logic
+│   └── main.py # CLI entry point
 ├── test/ # Unit tests for extraction functions and CLI
 ├── README.md # Project documentation
 └── pyproject.toml # Project metadata and dependencies
@@ -111,6 +112,6 @@ This project uses [uv](https://github.com/astral-sh/uv) for fast Python environm
 # TODO
 
 - [x] add mypy support
-- [ ] add a wheel and submit to pypy
+- [x] add a wheel and submit to pypy
 - [ ] CI/CD pipeline for updating pyp
 - [ ] write partial results and skip previously written values

@@ -1,9 +1,9 @@
 [project]
 name = "anndata-metadata"
-version = "0.1.0"
+version = "0.1.1"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 dependencies = [
     "h5py>=3.13.0",
     "pandas>=2.2.3",
@@ -21,8 +21,10 @@ dev = [
 ]
 
 [tool.setuptools]
-packages = ["anndata_metadata"]
 package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.yapf]
 based_on_style = "yapf"
